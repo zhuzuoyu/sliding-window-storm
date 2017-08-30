@@ -3,7 +3,6 @@ package slidingwindow;
 
 import java.util.Map;
 
-import org.apache.storm.shade.org.joda.time.Duration;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 
@@ -30,8 +29,7 @@ public class FilterBoltSliding extends BaseWindowedBolt{
 
 	@SuppressWarnings("rawtypes")
 	public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-		this.collector = collector;
-				
+		this.collector = collector;				
 		LOG.debug("prepare ok");
 	}
 
@@ -44,7 +42,7 @@ public class FilterBoltSliding extends BaseWindowedBolt{
 		System.out.print("一个窗口内的数据");
 		
 		for(Tuple tuple: ((Window<Tuple>) input).get()){			
-			int str=(Integer) tuple.getValueByField("intsmaze");
+			int str=(Integer) tuple.getValueByField("word");
 			System.out.print(" "+str);
 			 sum+=str;			
 		}
@@ -60,12 +58,4 @@ public class FilterBoltSliding extends BaseWindowedBolt{
 		declarer.declare(new Fields("count"));
 	}
 
-	public void cleanup() {
-
-	}
-
-
-
-
-	
 }
