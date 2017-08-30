@@ -54,7 +54,9 @@ public class StormGenericTopology {
 		*/
 
 		TopologyBuilder builder = new TopologyBuilder();
-
+		BaseWindowedBolt bolt = new FilterBoltSliding()
+                .withWindow(new Duration(5, TimeUnit.SECONDS), new Duration(3, TimeUnit.SECONDS));
+		
 		/*
 		builder.setSpout("KafkaSpout", new KafkaSpout(kafkaConfig), topologyProperties.getKafkaSpoutParallelism());
 		builder.setBolt("FilterBolt", new FilterMessageBolt(), topologyProperties.getFilterBoltParallelism()).shuffleGrouping("KafkaSpout");
@@ -62,8 +64,8 @@ public class StormGenericTopology {
 		*/
 		builder.setSpout("spout", new slidingSpout(), 1);
 		
-		builder.setBolt("slidingwindowbolt", new FilterBoltSliding().withWindow(new Count(6),new Count(2)),2).shuffleGrouping("spout");
-		builder.setBolt("countwordbolt", new CountWord().withWindow(new Count(2),new Count(2)),1).shuffleGrouping("slidingwindowbolt");
+		builder.setBolt("slidingwindowbolt", bolt,1).shuffleGrouping("spout");
+		builder.setBolt("countwordbolt", new CountWord(),1).shuffleGrouping("slidingwindowbolt");
 		
 		
 		return builder.createTopology();
