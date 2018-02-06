@@ -1,11 +1,12 @@
 package slidingwindow;
 
 public class ConfigurationException extends Exception {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ConfigurationException() {}
-	
-	public ConfigurationException(String message){
-		super(message);
-	}
+    public ConfigurationException() {
+    }
+
+    public ConfigurationException(String message) {
+        super(message);
+    }
 }
