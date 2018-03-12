@@ -65,7 +65,8 @@ public class StormGenericTopology {
 
     public static void main(String[] args) throws Exception {
         try {
-            String propertiesFile = "E:\\clone\\sliding-window-storm\\src\\main\\resources\\storm-siem-topology.config.properties"; //args[0];
+            String propertiesFile = "E:\\git\\SWS\\sliding-window-storm\\src\\main\\resources\\storm-siem-topology.config.properties"; //args[0];
+            //propertiesFile = "/opt/tiefan/tmp/storm-siem-topology.config.properties";
             TopologyProperties topologyProperties = new TopologyProperties(propertiesFile);
             StormGenericTopology topology = new StormGenericTopology(topologyProperties);
             topology.runTopology();
