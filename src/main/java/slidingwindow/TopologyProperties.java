@@ -50,13 +50,12 @@ public class TopologyProperties {
         filterBoltParallelism = Integer.parseInt(properties.getProperty("filter.bolt.paralellism", "1"));
         tcpBoltParallelism = Integer.parseInt(properties.getProperty("tcp.bolt.paralellism", "1"));
 
-        /**
+
          kafkaTopic = properties.getProperty("kafka.topic");
+         kafkaStartFromBeginning = Boolean.parseBoolean(properties.getProperty("kafa.start.from.beginning"));
          if (kafkaTopic == null)
          throw new ConfigurationException("Kafka topic must be specified in topology properties file");
 
-         kafkaStartFromBeginning = new Boolean(properties.getProperty("kafka.startFromBeginning","false"));
-         **/
         setStormConfig(properties);
     }
 
@@ -159,5 +158,9 @@ public class TopologyProperties {
 
     public int getTcpBoltParallelism() {
         return tcpBoltParallelism;
+    }
+
+    public void setTopologyName(String topologyName) {
+        this.topologyName = topologyName;
     }
 }

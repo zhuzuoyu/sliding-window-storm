@@ -7,6 +7,7 @@ import org.apache.storm.kafka.BrokerHosts;
 import org.apache.storm.kafka.KafkaSpout;
 import org.apache.storm.kafka.SpoutConfig;
 import org.apache.storm.kafka.ZkHosts;
+import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 
@@ -18,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 //import org.apache.storm.shade.org.joda.time.Duration;
 
 public class StormGenericTopologySpout {
-    public static final Logger LOG = LoggerFactory
-            .getLogger(StormGenericTopologySpout.class);
+    /*private static final Logger LOG = LoggerFactory
+            .getLogger(StormGenericTopologySpout.class);*/
     private final TopologyProperties topologyProperties;
 
     public StormGenericTopologySpout(TopologyProperties topologyProperties) {
@@ -50,7 +51,8 @@ public class StormGenericTopologySpout {
 		BrokerHosts kafkaBrokerHosts = new ZkHosts(topologyProperties.getZookeeperHosts());
 		String kafkaTopic = topologyProperties.getKafkaTopic();
 		SpoutConfig kafkaConfig = new SpoutConfig(kafkaBrokerHosts, kafkaTopic, "/storm/kafka/"+topologyProperties.getTopologyName(), kafkaTopic);
-		//kafkaConfig.forceFromStart = topologyProperties.isKafkaStartFromBeginning();
+		kafkaConfig.ignoreZkOffsets = topologyProperties.isKafkaStartFromBeginning();
+        kafkaConfig.scheme=new SchemeAsMultiScheme(new MessageScheme());
 
         TopologyBuilder builder = new TopologyBuilder();
         /*BaseWindowedBolt bolt = new FilterBoltSliding()
@@ -66,14 +68,18 @@ public class StormGenericTopologySpout {
         return builder.createTopology();
     }
 
+
+    /*./../apache-storm-1.0.4/bin/storm jar slidingwindow-server.jar slidingwindow.StormGenericTopologySpout*/
+
     public static void main(String[] args) throws Exception {
         try {
             String propertiesFile = "E:\\git\\SWS\\sliding-window-storm\\src\\main\\resources\\storm-siem-topology.config.properties"; //args[0];
-            //propertiesFile = "/opt/tiefan/tmp/storm-siem-topology.config.properties";
+            propertiesFile = "/opt/tiefan/tmp/storm-siem-topology.config.properties";
             TopologyProperties topologyProperties = new TopologyProperties(propertiesFile);
             StormGenericTopologySpout topology = new StormGenericTopologySpout(topologyProperties);
             topology.runTopology();
             System.out.println("test");
+            /*LOG.warn("StormGenericTopologySpout_test_it!");*/
         } catch (Exception e) {
             System.out.println("ERROR: " + e.toString());
         }

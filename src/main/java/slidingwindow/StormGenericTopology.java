@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 
 public class StormGenericTopology {
-    public static final Logger LOG = LoggerFactory
-            .getLogger(StormGenericTopology.class);
+    /*public static final Logger LOG = LoggerFactory
+            .getLogger(StormGenericTopology.class);*/
     private final TopologyProperties topologyProperties;
 
     public StormGenericTopology(TopologyProperties topologyProperties) {
@@ -49,7 +49,8 @@ public class StormGenericTopology {
 		*/
         TopologyBuilder builder = new TopologyBuilder();
         BaseWindowedBolt bolt = new FilterBoltSliding()
-                .withWindow(new BaseWindowedBolt.Duration(5, TimeUnit.SECONDS), new BaseWindowedBolt.Duration(3, TimeUnit.SECONDS));
+                .withWindow(new Count(5), new Count(3));
+                //.withWindow(new BaseWindowedBolt.Duration(5, TimeUnit.SECONDS), new BaseWindowedBolt.Duration(3, TimeUnit.SECONDS));
 
 		/*
 		builder.setSpout("KafkaSpout", new KafkaSpout(kafkaConfig), topologyProperties.getKafkaSpoutParallelism());
@@ -63,14 +64,22 @@ public class StormGenericTopology {
         return builder.createTopology();
     }
 
+
+    /*./../apache-storm-1.0.4/bin/storm jar slidingwindow-server.jar slidingwindow.StormGenericTopology
+    */
     public static void main(String[] args) throws Exception {
         try {
             String propertiesFile = "E:\\git\\SWS\\sliding-window-storm\\src\\main\\resources\\storm-siem-topology.config.properties"; //args[0];
-            //propertiesFile = "/opt/tiefan/tmp/storm-siem-topology.config.properties";
+            propertiesFile = "/opt/tiefan/tmp/storm-siem-topology.config.properties";
             TopologyProperties topologyProperties = new TopologyProperties(propertiesFile);
             StormGenericTopology topology = new StormGenericTopology(topologyProperties);
             topology.runTopology();
-            System.out.println("test");
+
+            topologyProperties.setTopologyName(topologyProperties.getTopologyName()+"new");
+            StormGenericTopology topology1 = new StormGenericTopology(topologyProperties);
+            topology1.runTopology();
+            System.out.println("test it !--- ---------------->");
+            /*LOG.info("test it !--- ---------------->");*/
         } catch (Exception e) {
             System.out.println("ERROR: " + e.toString());
         }
